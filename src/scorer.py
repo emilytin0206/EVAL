@@ -61,7 +61,8 @@ class Scorer:
                 futures.append(executor.submit(self._run_single, prompt, ex['target']))
 
             for future in tqdm(as_completed(futures), total=len(futures), desc="Eval", leave=False):
-                if res := future.result():
+                res = future.result()
+                if res is not None:  # <--- 只要不是 None (代表程式出錯)，就算是 0.0 也要加入！
                     scores.append(res)
 
         return {

@@ -1,8 +1,10 @@
 import os
+import sys
 import json
 import glob
 import logging
 import argparse
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from src.client import OllamaClient
 from src.loader import MMLUDataLoader
 from src.scorer import Scorer
@@ -75,7 +77,8 @@ def main():
             # ==========================================
             results.append({
                 "score": res['score'],
-                "prompt": p_text
+                "prompt": p_text,
+                "count": res['num_evals']  # <--- 加入這行，方便您確認是否真的跑了 300 題
             })
             
             logger.info(f"Score: {res['score']:.2%}")

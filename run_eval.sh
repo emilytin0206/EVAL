@@ -1,11 +1,4 @@
 #!/bin/bash
-
-# ==========================================
-# 自動化評測腳本
-# 用法: ./run_eval.sh [ModelName]
-# 範例: ./run_eval.sh llama3
-# ==========================================
-
 set -e  # 若有任何錯誤立即停止
 
 # 1. 設定變數
@@ -17,7 +10,7 @@ RESULT_DIR="./results"
 SUBSETS="high_school_mathematics","high_school_world_history","high_school_physics","professional_law","business_ethics"
 
 # 測試樣本數 (設為 0 代表跑全量，測試時建議設 5 或 10)
-LIMIT_SAMPLES=300
+LIMIT_SAMPLES=10
 
 echo "🚀 Starting Evaluation Pipeline using Model: $MODEL_NAME"
 echo "ℹ️  Running in current Python environment."

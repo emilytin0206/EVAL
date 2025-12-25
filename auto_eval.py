@@ -117,51 +117,41 @@ class PromptEvaluationSystem:
 
         scorer = Scorer(self.client, config=self.Config())
 
-        for idx, p_item in enumerate(prompts_list):
-            # 處理不同格式的 Prompt 輸入
-            if isinstance(p_item, str):
-                prompt_text = p_item
-                prompt_id = f"prompt_{idx}"
-            else:
-                prompt_text = p_item.get("text", "")
-                prompt_id = p_item.get("id", f"prompt_{idx}")
-
-            if not prompt_text: 
-                continue
-
-            logger.info(f"Evaluating Prompt ID: {prompt_id}")
+        for idx, item in enumerate(prompts):
+            # ... (中間省略) ...
             
-            # *** 核心: 呼叫 Scorer ***
-            # num_samples=None 表示跑全量，測試時可設為 5 或 10
-            score_res = scorer.score_instruction(
-                instruction=prompt_text, 
-                dataset=self.eval_data, 
-                num_samples=10 # <--- 測試用，正式跑請拿掉或設為 None
-            )
+            # 將單個 Prompt 的結果存入 results
+            results.append({
+                "score": res['score'],
+                "prompt": p_text,
+                "count": res['num_evals']
+            })
             
-            # 整理結果
-            result_entry = {
-                "prompt_id": prompt_id,
-                "prompt_text": prompt_text,
-                "score": score_res['score'],
-                "num_evals": score_res['num_evals'],
-                # "details": score_res['detailed_dataframe'].to_dict() # 若需要詳細 log 可打開
-            }
-            results.append(result_entry)
-            logger.info(f"Prompt {prompt_id} Score: {score_res['score']:.2%}")
+            logger.info(f"Score: {res['score']:.2%}")
+
+        # =======================================================
+        # 【修改確認】：在此處插入計算平均分的邏輯
+        # =======================================================
+        total_avg_score = 0.0
+        if results:
+            total_avg_score = sum(r['score'] for r in results) / len(results)
+        # =======================================================
 
         # 輸出結果檔案
-        output_path = os.path.join(self.output_dir, f"result_{file_name}")
-        output_data = {
-            "source_file": file_name,
-            "mmlu_subsets_used": self.data_loader.subsets,
-            "results": results
-        }
+        out_filename = f"{base_name}_result.json"
+        out_path = os.path.join(args.output_dir, out_filename)
         
-        with open(output_path, 'w', encoding='utf-8') as out_f:
-            json.dump(output_data, out_f, indent=4, ensure_ascii=False)
-        
-        logger.info(f"Saved results to {output_path}")
+        with open(out_path, 'w', encoding='utf-8') as f:
+            json.dump({
+                "source_file": full_file_name,
+                "model": args.model,
+                "subsets": subsets_list,
+                "average_score": total_avg_score,  # <--- 【修改確認】：新增此欄位
+                "results": results
+            }, f, indent=2, ensure_ascii=False)
+            
+        # Log 也可以順便顯示一下
+        logger.info(f"Saved results to: {out_filename} (Avg: {total_avg_score:.2%})")
 
     def run_all(self, prompt_dir):
         """掃描目錄下所有 JSON 並執行"""

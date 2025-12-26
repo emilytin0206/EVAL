@@ -20,14 +20,18 @@ def main():
     parser.add_argument("--split", type=str, default="validation", help="Dataset split")
     parser.add_argument("--prompt_dir", type=str, default="./prompts", help="Directory containing prompt JSONs")
     parser.add_argument("--output_dir", type=str, default="./results", help="Directory to save results")
-    parser.add_argument("--limit", type=int, default=5, help="Num samples per prompt (use 0 for all)")
+    parser.add_argument("--limit", type=int, default=5, help="Num samples per subset (use 0 for all)")
     
     args = parser.parse_args()
     
     # 1. 準備元件
     client = OllamaClient(model_name=args.model)
     subsets_list = [s.strip() for s in args.subsets.split(',')]
-    loader = MMLUDataLoader(subsets=subsets_list, split=args.split)
+    
+    # [修正 1] 將 limit 傳入 Loader，讓 Loader 負責每個子集取前 N 筆
+    # 注意：請確保 src/loader.py 的 __init__ 已經更新接收 limit 參數
+    loader = MMLUDataLoader(subsets=subsets_list, split=args.split, limit=args.limit)
+    
     scorer = Scorer(client, config_mode='Q_begin')
 
     # 2. 載入資料
@@ -40,13 +44,14 @@ def main():
     # 4. 掃描檔案並執行
     json_files = glob.glob(os.path.join(args.prompt_dir, "*.json"))
     
-    # --- 修改這裡：更明確的 Limit 判斷與 Log 提示 ---
+    # [修正 2] 設定 Scorer 的 limit 邏輯
+    # 因為 Loader 已經負責篩選資料了，所以這裡傳給 Scorer 0 (代表不抽樣，全跑)
     if args.limit > 0:
-        num_samples = args.limit
-        logger.info(f"🔧 Config: Sampling first {num_samples} items per prompt.")
+        logger.info(f"🔧 Config: Loader took first {args.limit} items per subset. Total loaded samples: {len(dataset)}")
+        scorer_limit = 0 
     else:
-        num_samples = None
-        logger.info("🔧 Config: Limit set to 0. Running on FULL dataset (All samples).")
+        logger.info("🔧 Config: Limit set to 0. Running on FULL dataset.")
+        scorer_limit = 0
 
     for json_file in json_files:
         full_file_name = os.path.basename(json_file)
@@ -60,6 +65,7 @@ def main():
         results = []
         prompts = data.get("prompts", [])
         
+        # [修正 3] 確保這裡的縮排正確，位於 for json_file 迴圈內部
         for idx, item in enumerate(prompts):
             # 兼容處理：無論輸入是字串還是物件，都取出 Prompt 文字
             p_text = item if isinstance(item, str) else item.get("text", "")
@@ -70,15 +76,14 @@ def main():
             if not p_text: continue
             
             logger.info(f"Testing: {p_id_log}")
-            res = scorer.score_instruction(p_text, dataset, num_samples=num_samples)
             
-            # ==========================================
-            # 修改重點：只儲存 score 和 prompt
-            # ==========================================
+            # [修正 4] 傳入 scorer_limit (為 0，代表執行所有 dataset 內容)
+            res = scorer.score_instruction(p_text, dataset, num_samples=scorer_limit)
+            
             results.append({
                 "score": res['score'],
                 "prompt": p_text,
-                "count": res['num_evals']  # <--- 加入這行，方便您確認是否真的跑了 300 題
+                "count": res['num_evals']
             })
             
             logger.info(f"Score: {res['score']:.2%}")
@@ -87,14 +92,12 @@ def main():
         out_filename = f"{base_name}_result.json"
         out_path = os.path.join(args.output_dir, out_filename)
         
-        # 這裡我保留了外層的 metadata (source_file 等)，讓檔案結構是合法的 JSON
-        # 如果你連外層都不要，只想存 results list，可以改為 json.dump(results, f, ...)
         with open(out_path, 'w', encoding='utf-8') as f:
             json.dump({
                 "source_file": full_file_name,
                 "model": args.model,
                 "subsets": subsets_list,
-                "results": results  # 這裡面現在只有 score 和 prompt
+                "results": results
             }, f, indent=2, ensure_ascii=False)
             
         logger.info(f"Saved results to: {out_filename}")

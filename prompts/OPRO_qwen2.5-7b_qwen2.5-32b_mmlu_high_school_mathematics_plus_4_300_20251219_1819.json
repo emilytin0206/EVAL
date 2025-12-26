@@ -1,0 +1,11 @@
+{
+    "prompts": [
+        "Answer the question directly.",
+        "Analyze the problem thoroughly and select the correct answer.",
+        "Analyze the problem thoroughly and select the correct answer from the options provided.",
+        "Provide a detailed answer.",
+        "Analyze each option carefully in relation to the problem statement and select the most accurate answer based on the given information.",
+        "Analyze each option carefully, eliminate incorrect answers, and select the most accurate response based on the given information.",
+        "Analyze each option carefully in relation to the given problem context and select the most accurate answer based on the provided information."
+    ]
+}

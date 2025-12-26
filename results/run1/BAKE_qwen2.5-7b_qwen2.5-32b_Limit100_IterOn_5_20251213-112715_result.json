@@ -1,0 +1,53 @@
+{
+  "source_file": "BAKE_qwen2.5-7b_qwen2.5-32b_Limit100_IterOn_5_20251213-112715.json",
+  "model": "qwen2.5:7b",
+  "subsets": [
+    "high_school_mathematics",
+    "high_school_world_history",
+    "high_school_physics",
+    "professional_law",
+    "business_ethics"
+  ],
+  "results": [
+    {
+      "score": 0.5519125683060109,
+      "prompt": "Identify the core issue in contract disputes and systematically break down contributing factors for a comprehensive analysis.",
+      "count": 183
+    },
+    {
+      "score": 0.5519125683060109,
+      "prompt": "Synthesize relevant legal principles and empirical data to justify your conclusion regarding patent infringement.",
+      "count": 183
+    },
+    {
+      "score": 0.5245901639344263,
+      "prompt": "Conduct a thorough examination of market trends using industry research and case studies to propose actionable strategies for business growth.",
+      "count": 183
+    },
+    {
+      "score": 0.5300546448087432,
+      "prompt": "Break down the fundamental components of the tax code affecting small businesses, then derive precise articulations for compliance requirements.",
+      "count": 183
+    },
+    {
+      "score": 0.5355191256830601,
+      "prompt": "Provide clear logical connections between financial statements and performance indicators, ensuring each step is verified with substantiated evidence.",
+      "count": 183
+    },
+    {
+      "score": 0.5683060109289617,
+      "prompt": "Justify your recommendations for a new policy using relevant constitutional clauses and detailed rationale supported by legal precedents.",
+      "count": 183
+    },
+    {
+      "score": 0.5245901639344263,
+      "prompt": "Streamline the process for determining liability in traffic accidents by systematically analyzing contributing factors and linking them to well-substantiated conclusions.",
+      "count": 183
+    },
+    {
+      "score": 0.5191256830601093,
+      "prompt": "Propose solutions for improving cybersecurity measures based on a thorough analysis of recent breaches and industry research, ensuring each step is clearly justified.",
+      "count": 183
+    }
+  ]
+}

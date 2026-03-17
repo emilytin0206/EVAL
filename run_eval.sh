@@ -4,14 +4,14 @@ set -e  # 若有任何錯誤立即停止
 # 1. 設定變數
 MODEL_NAME=${1:-"qwen2.5:7b"}  # 預設使用 llama3，也可從參數傳入
 VENV_DIR="venv"
-PROMPT_DIR="./prompts"
-RESULT_DIR="./results"
+PROMPT_DIR="./prompts/"
+RESULT_DIR="./results/"
 # 在這裡調整你要測的 MMLU 子集 (用逗號分隔)
-# SUBSETS=all
-SUBSETS="high_school_mathematics","high_school_world_history","high_school_physics","professional_law","business_ethics"
-
+SUBSETS=all
+# SUBSETS="high_school_mathematics","high_school_world_history","high_school_physics","professional_law","business_ethics"
+# SUBSETS="high_school_mathematics,high_school_world_history,high_school_macroeconomics,high_school_physics,business_ethics" 
 # 測試樣本數 (設為 0 代表跑全量，測試時建議設 5 或 10)
-LIMIT_SAMPLES=100
+LIMIT_SAMPLES=0
 
 echo "🚀 Starting Evaluation Pipeline using Model: $MODEL_NAME"
 echo "ℹ️  Running in current Python environment."

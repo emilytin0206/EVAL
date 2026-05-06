@@ -7,10 +7,13 @@ VENV_DIR="venv"
 PROMPT_DIR="./prompts/"
 RESULT_DIR="./results/"
 # 在這裡調整你要測的 MMLU 子集 (用逗號分隔)
-SUBSETS=all
+# SUBSETS=all
 # SUBSETS="high_school_mathematics","high_school_world_history","high_school_physics","professional_law","business_ethics"
 # SUBSETS="high_school_mathematics,high_school_world_history,high_school_macroeconomics,high_school_physics,business_ethics" 
 # 測試樣本數 (設為 0 代表跑全量，測試時建議設 5 或 10)
+SUBSETS="miscellaneous"  
+
+
 LIMIT_SAMPLES=0
 
 echo "🚀 Starting Evaluation Pipeline using Model: $MODEL_NAME"

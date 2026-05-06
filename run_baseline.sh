@@ -9,8 +9,9 @@ RESULT_DIR="./results"
 # 設定要測試的 MMLU 子集 (保持與 run_eval.sh 一致，以便公平比較)
 # SUBSETS="high_school_mathematics","high_school_world_history","high_school_physics","professional_law","business_ethics"
 # SUBSETS=all
-SUBSETS="high_school_mathematics,high_school_world_history,high_school_macroeconomics,high_school_physics,business_ethics" 
-
+# SUBSETS="high_school_mathematics,high_school_world_history,high_school_macroeconomics,high_school_physics,business_ethics" 
+# SUBSETS="high_school_mathematics" 
+SUBSETS="high_school_world_history"
 # 測試樣本數 (設為 0 代表跑全量，預設設為 100 與您原本設定一致)
 LIMIT_SAMPLES=0
 
